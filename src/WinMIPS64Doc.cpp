@@ -1,11 +1,11 @@
-// WinEVEDoc.cpp : implementation of the CWinEVEDoc class
+// WinMIPS64Doc.cpp : implementation of the CWinMIPS64Doc class
 //
 
 #include "stdafx.h"
-#include "WinEVE.h"
+#include "WinMIPS64.h"
 #include <string.h>
 
-#include "WinEVEDoc.h"
+#include "WinMIPS64Doc.h"
 #include "utils.h"
 #include "MemDialog.h"
 #include "MultiDialog.h"
@@ -120,12 +120,12 @@ static op_code_info codes[]={
 };
 
 /////////////////////////////////////////////////////////////////////////////
-// CWinEVEDoc
+// CWinMIPS64Doc
 
-IMPLEMENT_DYNCREATE(CWinEVEDoc, CDocument)
+IMPLEMENT_DYNCREATE(CWinMIPS64Doc, CDocument)
 
-BEGIN_MESSAGE_MAP(CWinEVEDoc, CDocument)
-	//{{AFX_MSG_MAP(CWinEVEDoc)
+BEGIN_MESSAGE_MAP(CWinMIPS64Doc, CDocument)
+	//{{AFX_MSG_MAP(CWinMIPS64Doc)
 	ON_COMMAND(ID_FILE_RESET, OnFileReset)
 	ON_COMMAND(ID_FILE_OPEN, OnFileOpen)
 	ON_COMMAND(ID_EXECUTE_SINGLE, OnExecuteSingle)
@@ -157,9 +157,9 @@ BEGIN_MESSAGE_MAP(CWinEVEDoc, CDocument)
 	//}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 /////////////////////////////////////////////////////////////////////////////
-// CWinEVEDoc construction/destruction
+// CWinMIPS64Doc construction/destruction
 
-CWinEVEDoc::CWinEVEDoc()
+CWinMIPS64Doc::CWinMIPS64Doc()
 {
 	unsigned int i,codebits,databits;
 	char txt[12];
@@ -189,7 +189,7 @@ CWinEVEDoc::CWinEVEDoc()
 		file.ReadString(AppDir,MAX_PATH);
 		file.Close();
 	}
-	strcpy(LasDir,AppDir); 	
+	strcpy_s(LasDir,MAX_PATH+1, AppDir); 	
 
  	fname=(CString)AppDir+'\\'+"winmips64.ini";
 
@@ -268,7 +268,7 @@ CWinEVEDoc::CWinEVEDoc()
 
 }
 
-CWinEVEDoc::~CWinEVEDoc()
+CWinMIPS64Doc::~CWinMIPS64Doc()
 {
 	CStdioFile file;
 	CString fname;
@@ -277,27 +277,27 @@ CWinEVEDoc::~CWinEVEDoc()
 
 	if (file.Open(fname,CFile::modeCreate | CFile::modeWrite))
 	{
-		sprintf(txt,"%d\n",bits(CODESIZE));
+		sprintf_s(txt,10, "%d\n",bits(CODESIZE));
 		file.WriteString(txt);
-		sprintf(txt,"%d\n",bits(DATASIZE));
+		sprintf_s(txt,10,"%d\n",bits(DATASIZE));
 		file.WriteString(txt);
-		sprintf(txt,"%d\n",ADD_LATENCY);
+		sprintf_s(txt,10,"%d\n",ADD_LATENCY);
 		file.WriteString(txt);
-		sprintf(txt,"%d\n",MUL_LATENCY);
+		sprintf_s(txt,10,"%d\n",MUL_LATENCY);
 		file.WriteString(txt);
-		sprintf(txt,"%d\n",DIV_LATENCY);
+		sprintf_s(txt,10,"%d\n",DIV_LATENCY);
 		file.WriteString(txt);
-		if (delay_slot) sprintf(txt,"1\n");
-		else			sprintf(txt,"0\n");
+		if (delay_slot) sprintf_s(txt,10,"1\n");
+		else			sprintf_s(txt,10,"0\n");
 		file.WriteString(txt);
-		if (forwarding) sprintf(txt,"1\n");
-		else			sprintf(txt,"0\n");
+		if (forwarding) sprintf_s(txt,10,"1\n");
+		else			sprintf_s(txt,10,"0\n");
 		file.WriteString(txt);
-		if (branch_target_buffer) sprintf(txt,"1\n");
-		else			          sprintf(txt,"0\n");
+		if (branch_target_buffer) sprintf_s(txt,10,"1\n");
+		else			          sprintf_s(txt,10,"0\n");
 		file.WriteString(txt);
-		if (registers_as_numbers) sprintf(txt,"1\n");
-		else			          sprintf(txt,"0\n");
+		if (registers_as_numbers) sprintf_s(txt,10,"1\n");
+		else			          sprintf_s(txt,10,"0\n");
 		file.WriteString(txt);
 
 	
@@ -314,7 +314,7 @@ CWinEVEDoc::~CWinEVEDoc()
 	delete [] datalines;
 }
 
-void CWinEVEDoc::clear()
+void CWinMIPS64Doc::clear()
 {
 	cycles=instructions=loads=stores=branch_taken_stalls=branch_misprediction_stalls=0;
 	raw_stalls=waw_stalls=war_stalls=structural_stalls=0;
@@ -328,7 +328,7 @@ void CWinEVEDoc::clear()
 	stall_type=stalls=0;
 }
 
-BOOL CWinEVEDoc::OnNewDocument()
+BOOL CWinMIPS64Doc::OnNewDocument()
 {
 
 	if (!CDocument::OnNewDocument())
@@ -342,9 +342,9 @@ BOOL CWinEVEDoc::OnNewDocument()
 
 
 /////////////////////////////////////////////////////////////////////////////
-// CWinEVEDoc serialization
+// CWinMIPS64Doc serialization
 
-void CWinEVEDoc::Serialize(CArchive& ar)
+void CWinMIPS64Doc::Serialize(CArchive& ar)
 {
 	if (ar.IsStoring())
 	{
@@ -357,25 +357,25 @@ void CWinEVEDoc::Serialize(CArchive& ar)
 }
 
 /////////////////////////////////////////////////////////////////////////////
-// CWinEVEDoc diagnostics
+// CWinMIPS64Doc diagnostics
 
 #ifdef _DEBUG
-void CWinEVEDoc::AssertValid() const
+void CWinMIPS64Doc::AssertValid() const
 {
 	CDocument::AssertValid();
 }
 
-void CWinEVEDoc::Dump(CDumpContext& dc) const
+void CWinMIPS64Doc::Dump(CDumpContext& dc) const
 {
 	CDocument::Dump(dc);
 }
 #endif //_DEBUG
 
 /////////////////////////////////////////////////////////////////////////////
-// CWinEVEDoc commands
+// CWinMIPS64Doc commands
 
 
-void CWinEVEDoc::OnFileReset() 
+void CWinMIPS64Doc::OnFileReset() 
 { // Reset the processor
 	unsigned int i;
 
@@ -399,7 +399,7 @@ void CWinEVEDoc::OnFileReset()
 
 }
 
-void CWinEVEDoc::OnFullReset() 
+void CWinMIPS64Doc::OnFullReset() 
 { // Reset Data Memory as well
 	unsigned i;
 	for (i=0;i<DATASIZE/8;i++) datalines[i]="";
@@ -408,7 +408,7 @@ void CWinEVEDoc::OnFullReset()
 	OnFileReset();	
 }
 
-void CWinEVEDoc::OnFileOpen() 
+void CWinMIPS64Doc::OnFileOpen() 
 {	
 	CFileDialog dlg(TRUE,"s","*.s");
 	CStdioFile last;
@@ -444,7 +444,7 @@ void CWinEVEDoc::OnFileOpen()
 // if unable to write it there -  write it here instead
 			int pathstart=path.ReverseFind('\\');
 			if (pathstart>=0 && pathstart<MAX_PATH)
-				strcpy(LasDir,path.Left(pathstart));
+				strcpy_s(LasDir,MAX_PATH, path.Left(pathstart));
 			else
 				LasDir[0]=0;
 			fname=(CString)LasDir+'\\'+"winmips64.las";
@@ -461,39 +461,39 @@ void CWinEVEDoc::OnFileOpen()
 	UpdateAllViews(NULL,1L);
 }
 
-void CWinEVEDoc::check_stalls(int status,char *str,int rawreg,char *txt)
+void CWinMIPS64Doc::check_stalls(int status,char *str,int rawreg,char *txt)
 {
 	char mess[100];
 	if (status==RAW)	
 	{
 		raw_stalls++;
 		if (rawreg<32)
-			sprintf(mess,"  Atasco RAW en %s (R%d)",str,rawreg);
+			sprintf_s(mess,100,"  Atasco RAW en %s (R%d)",str,rawreg);
 		else
-			sprintf(mess,"  Atasco RAW en %s (F%d)",str,rawreg-32);
-		strcat(txt,mess);
+			sprintf_s(mess,100,"  Atasco RAW en %s (F%d)",str,rawreg-32);
+		strcat_s(txt,100, mess);
 	}
 	if (status==WAW)	
 	{
 		waw_stalls++;
 		if (rawreg<32)
-			sprintf(mess,"  Atasco WAW en %s (R%d)",str,rawreg);
+			sprintf_s(mess,100,"  Atasco WAW en %s (R%d)",str,rawreg);
 		else
-			sprintf(mess,"  Atasco WAW en %s (F%d)",str,rawreg-32);
-		strcat(txt,mess);
+			sprintf_s(mess,100,"  Atasco WAW en %s (F%d)",str,rawreg-32);
+		strcat_s(txt,100,mess);
 	}
 	if (status==WAR)
 	{
 		war_stalls++;
 		if (rawreg<32)
-			sprintf(mess,"  Atasco WAR en %s (R%d)",str,rawreg);
+			sprintf_s(mess,100,"  Atasco WAR en %s (R%d)",str,rawreg);
 		else
-			sprintf(mess,"  Atasco WAR en %s (F%d)",str,rawreg-32);
-		strcat(txt,mess);
+			sprintf_s(mess,100,"  Atasco WAR en %s (F%d)",str,rawreg-32);
+		strcat_s(txt,100,mess);
 	}
 }
 
-void CWinEVEDoc::process_result(RESULT *result,BOOL show)
+void CWinMIPS64Doc::process_result(RESULT *result,BOOL show)
 {
 	char txt[300];
 	CMainFrame* pFrame=(CMainFrame*) AfxGetApp()->m_pMainWnd;
@@ -507,13 +507,13 @@ void CWinEVEDoc::process_result(RESULT *result,BOOL show)
 	{
 		something=TRUE;
 		branch_taken_stalls++;
-		strcat(txt,"  Atasco Branch Taken");
+		strcat_s(txt,100,"  Atasco Branch Taken");
 	}
 	if (result->ID==BRANCH_MISPREDICTED_STALL)
 	{
 		something=TRUE;
 		branch_misprediction_stalls++;
-		strcat(txt,"  Atasco Branch Misprediction");
+		strcat_s(txt,100,"  Atasco Branch Misprediction");
 	}
 
 	if (result->MEM==LOADS || result->MEM==DATA_ERR) loads++;
@@ -531,54 +531,54 @@ void CWinEVEDoc::process_result(RESULT *result,BOOL show)
 		if (result->ID==STALLED)
 		{
 			structural_stalls++;
-			strcat(txt,"  Atasco Estructural en ID");
+			strcat_s(txt,300,"  Atasco Estructural en ID");
 		}
 		if (result->EX==STALLED)
 		{
 			structural_stalls++;
-			strcat(txt,"  Atasco Estructural en EX");
+			strcat_s(txt,300,"  Atasco Estructural en EX");
 		}
 		if (result->DIVIDER==STALLED)
 		{
 			structural_stalls++;
-			strcat(txt,"  Atasco Estructural en FP-DIV");
+			strcat_s(txt,300,"  Atasco Estructural en FP-DIV");
 		}
 		if (result->MULTIPLIER[MUL_LATENCY-1]==STALLED)
 		{
 			structural_stalls++;
-			strcat(txt,"  Atasco Estructural en FP-MUL");
+			strcat_s(txt,300,"  Atasco Estructural en FP-MUL");
 		}
 		if (result->ADDER[ADD_LATENCY-1]==STALLED)
 		{
 			structural_stalls++;
-			strcat(txt,"  Atasco Estructural en FP-ADD");
+			strcat_s(txt,300,"  Atasco Estructural en FP-ADD");
 		}
 	}
 	if (result->IF==NO_SUCH_CODE_MEMORY)
 	{
-		strcat(txt,"  No existe esa dirección de código!");
+		strcat_s(txt,300,"  No existe esa dirección de código!");
 		cpu.status=HALTED;
 	}
 	if (result->EX==INTEGER_OVERFLOW)
 	{
-		strcat(txt,"  Desbordamiento de número entero!");
+		strcat_s(txt,300,"  Desbordamiento de número entero!");
 	}
 	if (result->DIVIDER==DIVIDE_BY_ZERO)
 	{
-		strcat(txt,"  División por Cero en DIV!");
+		strcat_s(txt,300,"  División por Cero en DIV!");
 	}
 
 	if (result->MEM==DATA_ERR)
 	{
-		strcat(txt,"  Memoria no inicializada en MEM!");
+		strcat_s(txt,300,"  Memoria no inicializada en MEM!");
 	}
 	if (result->MEM==NO_SUCH_DATA_MEMORY)
 	{
-		strcat(txt,"  No existe esa dirección de datos!");
+		strcat_s(txt,300,"  No existe esa dirección de datos!");
 	}
 	if (result->MEM==DATA_MISALIGNED)
 	{
-		strcat(txt, " Error Fatal - LOAD/StTORE de memoria mal alineado!");
+		strcat_s(txt, 300," Error Fatal - LOAD/StTORE de memoria mal alineado!");
 	}
 
 	if (show)
@@ -588,71 +588,73 @@ void CWinEVEDoc::process_result(RESULT *result,BOOL show)
 	}
 }
 
-int CWinEVEDoc::update_io(processor *cpu)
+int CWinMIPS64Doc::update_io(processor *cpuarg)
 {
-	WORD32 func=*(WORD32 *)&cpu->mm[0];
+	WORD32 func=*(WORD32 *)&cpuarg->mm[0];
 	int i,x,y,nlines,ncols,status=0;
 
 	if (!func) return status;
 
 	char txt[30];
 	DOUBLE64 fp;
-	fp.u=*(WORD64 *)&cpu->mm[8]; 
+	fp.u=*(WORD64 *)&cpuarg->mm[8]; 
 
 	switch (func)
 	{
 	case (WORD32)1:
-		sprintf(txt,"%I64u\n",fp.u);
-		cpu->Terminal+=txt;
+		sprintf_s(txt,30,"%I64u\n",fp.u);
+		cpuarg->Terminal+=txt;
 		UpdateAllViews(NULL,2);
 		break;
 	case (WORD32)2:
-		sprintf(txt,"%I64d\n",fp.s);
-		cpu->Terminal+=txt;
+		sprintf_s(txt,30,"%I64d\n",fp.s);
+		cpuarg->Terminal+=txt;
 		UpdateAllViews(NULL,2);
 		break;
 	case (WORD32)3:
-		sprintf(txt,"%lf\n",fp.d);
-		cpu->Terminal+=txt;
+		sprintf_s(txt,30,"%lf\n",fp.d);
+		cpuarg->Terminal+=txt;
 		UpdateAllViews(NULL,2);
 		break;
 	case (WORD32)4:
 // need to test here if fp.u is a legal address!
-		if (fp.u<cpu->datasize) cpu->Terminal+=&cpu->data[fp.u];
-		UpdateAllViews(NULL,2);
+        if (fp.u<cpuarg->datasize) {
+        	cpuarg->Terminal = cpuarg->Terminal + &cpuarg->data[fp.u];
+        }
+        UpdateAllViews(NULL,2);
 		break;
 
 	case (WORD32)5:
 
 		y=(DWORD32)((fp.u>>32)&255);
 		x=(DWORD32)((fp.u>>40)&255);
-		cpu->drawit=TRUE;
+		cpuarg->drawit=TRUE;
 //			char txt[80];
 //			sprintf(txt,"%d %d",x,y);
 //			AfxMessageBox(txt);
 
 		if (x<GSXY && y<GSXY)
 		{
-			cpu->screen[GSXY*y+x]=(WORD32)fp.u;
+			cpuarg->screen[GSXY*y+x]=(WORD32)fp.u;
 		}
 		UpdateAllViews(NULL,2);
 		break;
 	case (WORD32)6:
-		cpu->Terminal="";
-		cpu->nlines=0; 
+		cpuarg->Terminal="";
+		cpuarg->nlines=0; 
 		UpdateAllViews(NULL,2);
 		break;
 	case (WORD32)7:
-		for (i=0;i<GSXY*GSXY;i++) cpu->screen[i]=WHITE;
-		cpu->drawit=FALSE;
+		for (i=0;i<GSXY*GSXY;i++) cpuarg->screen[i]=WHITE;
+		cpuarg->drawit=FALSE;
 		UpdateAllViews(NULL,2);
 		break;
 	case (WORD32)8:
-		cpu->keyboard=1;
+		cpuarg->keyboard=1;
 		status=1;
 		break;
 	case (WORD32)9:
-		cpu->keyboard=2;
+		cpuarg->keyboard=2;
 		status=1;
 		break;
 	default:
@@ -661,9 +663,9 @@ int CWinEVEDoc::update_io(processor *cpu)
 
 	nlines=0;
 	ncols=0;
-	for (i=0;i<cpu->Terminal.GetLength();i++)
+	for (i=0;i<cpuarg->Terminal.GetLength();i++)
 	{
-		if (cpu->Terminal[i]=='\n')
+		if (cpuarg->Terminal[i]=='\n')
 		{
 			nlines++;
 			ncols=0;
@@ -671,16 +673,16 @@ int CWinEVEDoc::update_io(processor *cpu)
 		else
 			ncols++;
 	}
-	cpu->nlines=nlines;
-	cpu->ncols=ncols;
+	cpuarg->nlines=nlines;
+	cpuarg->ncols=ncols;
 	
 //	UpdateAllViews(NULL,1L);
 
-	*(WORD32 *)&cpu->mm[0]=0;
+	*(WORD32 *)&cpuarg->mm[0]=0;
 	return status;
 }
 
-void CWinEVEDoc::update_history(pipeline *pipe,processor *cpu,RESULT *result)
+void CWinMIPS64Doc::update_history(pipeline *pipearg,processor *cpuarg,RESULT *result)
 {
 	int substage,stage;
 	unsigned int i,cc;
@@ -707,9 +709,9 @@ void CWinEVEDoc::update_history(pipeline *pipe,processor *cpu,RESULT *result)
 		{
 
 		case IFETCH:
-			if (pipe->if_id.active)
+			if (pipearg->if_id.active)
 			{
-				if (pipe->if_id.IR==previous)
+				if (pipearg->if_id.IR==previous)
 				{
 
 					history[i].status[cc].stage=IDECODE;
@@ -730,27 +732,27 @@ void CWinEVEDoc::update_history(pipeline *pipe,processor *cpu,RESULT *result)
 		case IDECODE:
 			passed=FALSE;
 			
-			if (pipe->integer.active && pipe->integer.IR==previous && result->ID!=STALLED)
+			if (pipearg->integer.active && pipearg->integer.IR==previous && result->ID!=STALLED)
 			{
 				passed=TRUE;
 				history[i].status[cc].stage=INTEX;
 				history[i].status[cc].cause=0;
 			}
-			if (pipe->m[0].active && pipe->m[0].IR==previous && result->ID!=STALLED)
+			if (pipearg->m[0].active && pipearg->m[0].IR==previous && result->ID!=STALLED)
 			{
 				passed=TRUE;
 				history[i].status[cc].stage=MULEX;
 				history[i].status[cc].substage=0;
 				history[i].status[cc].cause=0;
 			}
-			if (pipe->a[0].active && pipe->a[0].IR==previous && result->ID!=STALLED)
+			if (pipearg->a[0].active && pipearg->a[0].IR==previous && result->ID!=STALLED)
 			{
 				passed=TRUE;
 				history[i].status[cc].stage=ADDEX;
 				history[i].status[cc].substage=0;
 				history[i].status[cc].cause=0;
 			}
-			if (pipe->div.active && pipe->div.IR==previous && result->ID!=STALLED)
+			if (pipearg->div.active && pipearg->div.IR==previous && result->ID!=STALLED)
 			{
 				passed=TRUE;
 				history[i].status[cc].stage=DIVEX;
@@ -764,7 +766,7 @@ void CWinEVEDoc::update_history(pipeline *pipe,processor *cpu,RESULT *result)
 			}
 			break;
 		case INTEX:
-			if (pipe->ex_mem.active && pipe->ex_mem.IR==previous)
+			if (pipearg->ex_mem.active && pipearg->ex_mem.IR==previous)
 			{
 				history[i].status[cc].stage=MEMORY;
 				history[i].status[cc].cause=0;
@@ -777,9 +779,9 @@ void CWinEVEDoc::update_history(pipeline *pipe,processor *cpu,RESULT *result)
 			break;
 
 		case MULEX:
-			if (substage==pipe->MUL_LATENCY-1)
+			if (substage==pipearg->MUL_LATENCY-1)
 			{
-				if (pipe->ex_mem.active && pipe->ex_mem.IR==previous)
+				if (pipearg->ex_mem.active && pipearg->ex_mem.IR==previous)
 				{
 					history[i].status[cc].stage=MEMORY;
 					history[i].status[cc].cause=0;
@@ -793,7 +795,7 @@ void CWinEVEDoc::update_history(pipeline *pipe,processor *cpu,RESULT *result)
 			}
 			else
 			{
-				if (pipe->m[substage+1].active && pipe->m[substage+1].IR==previous)
+				if (pipearg->m[substage+1].active && pipearg->m[substage+1].IR==previous)
 				{
 					history[i].status[cc].stage=MULEX;
 					history[i].status[cc].substage= (BYTE) (substage + 1);
@@ -809,9 +811,9 @@ void CWinEVEDoc::update_history(pipeline *pipe,processor *cpu,RESULT *result)
 			break;
 
 		case ADDEX:
-			if (substage==pipe->ADD_LATENCY-1)
+			if (substage==pipearg->ADD_LATENCY-1)
 			{
-				if (pipe->ex_mem.active && pipe->ex_mem.IR==previous)
+				if (pipearg->ex_mem.active && pipearg->ex_mem.IR==previous)
 				{
 					history[i].status[cc].stage=MEMORY;
 					history[i].status[cc].cause=0;
@@ -825,7 +827,7 @@ void CWinEVEDoc::update_history(pipeline *pipe,processor *cpu,RESULT *result)
 			}
 			else
 			{
-				if (pipe->a[substage+1].active && pipe->a[substage+1].IR==previous)
+				if (pipearg->a[substage+1].active && pipearg->a[substage+1].IR==previous)
 				{
 					history[i].status[cc].stage=ADDEX;
 					history[i].status[cc].substage=(BYTE) (substage + 1);
@@ -840,7 +842,7 @@ void CWinEVEDoc::update_history(pipeline *pipe,processor *cpu,RESULT *result)
 			}
 			break;
 		case DIVEX:
-			if (pipe->ex_mem.active && pipe->ex_mem.IR==previous)
+			if (pipearg->ex_mem.active && pipearg->ex_mem.IR==previous)
 			{
 				history[i].status[cc].stage=MEMORY;
 				history[i].status[cc].cause=0;
@@ -853,7 +855,7 @@ void CWinEVEDoc::update_history(pipeline *pipe,processor *cpu,RESULT *result)
 			break;
 
 		case MEMORY:
-			if (pipe->mem_wb.active && pipe->mem_wb.IR==previous)
+			if (pipearg->mem_wb.active && pipearg->mem_wb.IR==previous)
 			{
 				history[i].status[cc].stage=WRITEB;
 				history[i].status[cc].cause=0;
@@ -878,9 +880,9 @@ void CWinEVEDoc::update_history(pipeline *pipe,processor *cpu,RESULT *result)
 
 // make a new entry
 //	if (cpu->PC!=history[entries-1].IR)
-	if ((result->ID==OK || result->ID==EMPTY || cpu->PC!=history[entries-1].IR) && pipe->active)
+	if ((result->ID==OK || result->ID==EMPTY || cpuarg->PC!=history[entries-1].IR) && pipearg->active)
 	{
-		history[entries].IR=cpu->PC;
+		history[entries].IR=cpuarg->PC;
 		history[entries].status[0].stage=IFETCH;
 		history[entries].status[0].cause=0;
 		history[entries].start_cycle=cycles;
@@ -897,29 +899,29 @@ void CWinEVEDoc::update_history(pipeline *pipe,processor *cpu,RESULT *result)
 
 }
 
-int CWinEVEDoc::one_cycle(pipeline *pipe,processor *cpu,BOOL show)
+int CWinMIPS64Doc::one_cycle(pipeline *pipearg,processor *cpuarg,BOOL show)
 {
 	int status=0;
 	RESULT result;
 
-	if (cpu->status==HALTED) return HALTED;
+	if (cpuarg->status==HALTED) return HALTED;
 
-	status=clock_tick(pipe,cpu,forwarding,delay_slot,branch_target_buffer,&result);
+	status=clock_tick(pipearg,cpuarg,forwarding,delay_slot,branch_target_buffer,&result);
 
 	cycles++;
 	process_result(&result,show);
-	update_history(pipe,cpu,&result);
-	if (update_io(cpu)) return WAITING_FOR_INPUT;
+	update_history(pipearg,cpuarg,&result);
+	if (update_io(cpuarg)) return WAITING_FOR_INPUT;
 	if (status==HALTED) 
 	{
-		cpu->status=HALTED;
+		cpuarg->status=HALTED;
 		return HALTED;
 	}
 
 	return status;
 }
 
-void CWinEVEDoc::OnExecuteSingle() 
+void CWinMIPS64Doc::OnExecuteSingle() 
 {
 	CMainFrame* pFrame=(CMainFrame*) AfxGetApp()->m_pMainWnd;
 	CStatusBar* pStatus=&pFrame->m_wndStatusBar;
@@ -932,11 +934,12 @@ void CWinEVEDoc::OnExecuteSingle()
 								// code window should be scrolled
 }
 
-void CWinEVEDoc::OnExecuteMulticycle() 
+void CWinMIPS64Doc::OnExecuteMulticycle() 
 {
 	CMainFrame* pFrame=(CMainFrame*) AfxGetApp()->m_pMainWnd;
 	CStatusBar* pStatus=&pFrame->m_wndStatusBar;
-	int i,status;
+	int i;
+	int status = 0;
 	simulation_running=TRUE;
 	for (i=0;i<multi-1;i++)
 	{
@@ -955,12 +958,12 @@ void CWinEVEDoc::OnExecuteMulticycle()
 								// code window should be scrolled
 }
 
-void CWinEVEDoc::OnExecuteStop() 
+void CWinMIPS64Doc::OnExecuteStop() 
 {
 	simulation_running=FALSE;
 }
 
-void CWinEVEDoc::OnExecuteRunto() 
+void CWinMIPS64Doc::OnExecuteRunto() 
 {
 	MSG message;
 	char buf[80];
@@ -983,12 +986,12 @@ void CWinEVEDoc::OnExecuteRunto()
 	simulation_running=FALSE;
 	if (status==WAITING_FOR_INPUT) 
 	{
-		sprintf(buf,"Simulación Detenida luego de %d ciclos - Esperando Entrada",lapsed);
+		sprintf_s(buf,80,"Simulación Detenida luego de %d ciclos - Esperando Entrada",lapsed);
 		restart=TRUE;
 	}
 	else
 	{
-		sprintf(buf,"Simulación Detenida luego de %d ciclos",lapsed);
+		sprintf_s(buf,80,"Simulación Detenida luego de %d ciclos",lapsed);
 		restart=FALSE;
 	}
 
@@ -997,7 +1000,7 @@ void CWinEVEDoc::OnExecuteRunto()
 								// code window should be scrolled
 }
 
-int CWinEVEDoc::openfile(CString fname)
+int CWinMIPS64Doc::openfile(CString fname)
 {
 	unsigned int i;
 	int res;
@@ -1029,7 +1032,8 @@ int CWinEVEDoc::openfile(CString fname)
 	if (res==1)
 	{
 		char txt[512];
-		sprintf(txt,"No se pudo abrir el archivo %s",fname);
+		CT2A fname_ascii(fname);
+		sprintf_s(txt,512,"No se pudo abrir el archivo %s",fname_ascii.m_psz);
 		AfxMessageBox(txt,MB_OK|MB_ICONEXCLAMATION);
 		return res;
 	}
@@ -1052,7 +1056,7 @@ int CWinEVEDoc::openfile(CString fname)
 // This function reads a line even if not termimated by CR
 //
 
-int CWinEVEDoc::mygets(char *line,int max,CFile *fp)
+int CWinMIPS64Doc::mygets(char *line,int max,CFile *fp)
 {
 	int i,bytes;
 	char ch;
@@ -1081,7 +1085,7 @@ int CWinEVEDoc::mygets(char *line,int max,CFile *fp)
 	return 0;
 }
 
-int CWinEVEDoc::openit(CString fname)
+int CWinMIPS64Doc::openit(CString fname)
 {
 	int i,j,k,gotline,lineptr,errors;
 	char preline[MAX_LINE+1];
@@ -1154,17 +1158,17 @@ int CWinEVEDoc::openit(CString fname)
 	return 0;
 }
 
-BOOL CWinEVEDoc::getcodesym(char *&ptr,WORD32 *m)
+BOOL CWinMIPS64Doc::getcodesym(char *&ptr,WORD32 *m)
 {
     return getsym(code_table,code_symptr,ptr,m);
 }
 
-BOOL CWinEVEDoc::getdatasym(char *&ptr,WORD32 *m)
+BOOL CWinMIPS64Doc::getdatasym(char *&ptr,WORD32 *m)
 {
     return getsym(data_table,data_symptr,ptr,m);
 }
 
-int CWinEVEDoc::instruction(char *start)
+int CWinMIPS64Doc::instruction(char *start)
 {
     int i=0;
     char text[10];    /* all instructions are 6 chars or less */
@@ -1186,7 +1190,7 @@ int CWinEVEDoc::instruction(char *start)
     return i;
 }
 
-BOOL CWinEVEDoc::directive(int pass,char *ptr,char *line)
+BOOL CWinMIPS64Doc::directive(int pass,char *ptr,char *line)
 { // process assembler directives. return number of bytes consumed
     
     BOOL zero,bs;
@@ -1556,7 +1560,7 @@ BOOL CWinEVEDoc::directive(int pass,char *ptr,char *line)
 
 // fill in symbol tables and check for syntax errors
 
-int CWinEVEDoc::first_pass(char *line,int lineptr)
+int CWinMIPS64Doc::first_pass(char *line,int lineptr)
 {
     int i,len;
     char *ptr=line;
@@ -1573,7 +1577,7 @@ int CWinEVEDoc::first_pass(char *line,int lineptr)
         
         if (CODEORDATA==0)
         {
-            sprintf(txt,"Pasada 1 - Error en linea %d\n",lineptr);
+            sprintf_s(txt,100,"Pasada 1 - Error en linea %d\n",lineptr);
 			AfxMessageBox(txt);
             return 1;
         }
@@ -1581,7 +1585,7 @@ int CWinEVEDoc::first_pass(char *line,int lineptr)
         {
             if (code_symptr>=SYMTABSIZE)
             {
-                sprintf(txt,"Pasada 1 - Error en linea %d\nLa tabla de Simbolos de Código esta llena.",lineptr);
+                sprintf_s(txt,100,"Pasada 1 - Error en linea %d\nLa tabla de Simbolos de Código esta llena.",lineptr);
                 AfxMessageBox(txt);
                 return 1;
             } 
@@ -1596,7 +1600,7 @@ int CWinEVEDoc::first_pass(char *line,int lineptr)
         {
             if (data_symptr>=SYMTABSIZE)
             {
-                sprintf(txt,"Pasada 1 - Error en linea %d\nLa tabla de Simbolos de Datos esta llena.",lineptr);
+                sprintf_s(txt,100,"Pasada 1 - Error en linea %d\nLa tabla de Simbolos de Datos esta llena.",lineptr);
                 AfxMessageBox(txt);
                 return 1;
             } 
@@ -1616,7 +1620,7 @@ int CWinEVEDoc::first_pass(char *line,int lineptr)
         // increase instruction pointer
         if (CODEORDATA!=CODE)
         {
-            sprintf(txt,"Pasada 1 - Error en linea %d\n",lineptr);
+            sprintf_s(txt,100,"Pasada 1 - Error en linea %d\n",lineptr);
 			AfxMessageBox(txt);
             return 1;
         }
@@ -1624,7 +1628,7 @@ int CWinEVEDoc::first_pass(char *line,int lineptr)
         codeptr+=4;
         if (codeptr>CODESIZE)
         {
-            sprintf(txt,"Pasada 1 - Error en linea %d\nNo existe esa ubicación de memoria",lineptr);
+            sprintf_s(txt,100,"Pasada 1 - Error en linea %d\nNo existe esa ubicación de memoria",lineptr);
             AfxMessageBox(txt);
             return 1;
         }
@@ -1632,12 +1636,12 @@ int CWinEVEDoc::first_pass(char *line,int lineptr)
     }
     if (directive(1,ptr,line)) return 0;
 
-    sprintf(txt,"Pasada 1 - Error en linea %d\n",lineptr);
+    sprintf_s(txt,100,"Pasada 1 - Error en linea %d\n",lineptr);
     AfxMessageBox(txt);
     return 1;
 }
 
-int CWinEVEDoc::second_pass(char *line,int /* lineptr */)
+int CWinMIPS64Doc::second_pass(char *line,int /* lineptr */)
 {
     WORD32 w,byte;
     WORD32 op,code_word=0;
@@ -1934,7 +1938,7 @@ int CWinEVEDoc::second_pass(char *line,int /* lineptr */)
     return ret_val;    
 }
 
-void CWinEVEDoc::OnFileMulti() 
+void CWinMIPS64Doc::OnFileMulti() 
 {
 	CMultiDialog dlg;
 
@@ -1943,7 +1947,7 @@ void CWinEVEDoc::OnFileMulti()
     multi=dlg.m_cycles;	
 }
 
-void CWinEVEDoc::OnFileMemory() 
+void CWinMIPS64Doc::OnFileMemory() 
 {
 	unsigned int i;
 	unsigned int codesize,datasize;
@@ -2008,52 +2012,52 @@ void CWinEVEDoc::OnFileMemory()
 
 // Disable everything while simulation is running
 
-void CWinEVEDoc::OnUpdateExecuteMulticycle(CCmdUI* pCmdUI) 
+void CWinMIPS64Doc::OnUpdateExecuteMulticycle(CCmdUI* pCmdUI) 
 {
 	pCmdUI->Enable(!simulation_running && !cpu.keyboard);	
 }
 
-void CWinEVEDoc::OnUpdateExecuteStop(CCmdUI* pCmdUI) 
+void CWinMIPS64Doc::OnUpdateExecuteStop(CCmdUI* pCmdUI) 
 {
 	pCmdUI->Enable(simulation_running);	
 }
 
-void CWinEVEDoc::OnUpdateExecuteRunto(CCmdUI* pCmdUI) 
+void CWinMIPS64Doc::OnUpdateExecuteRunto(CCmdUI* pCmdUI) 
 {
 	pCmdUI->Enable(!simulation_running && !cpu.keyboard);
 }
 
-void CWinEVEDoc::OnUpdateExecuteSingle(CCmdUI* pCmdUI) 
+void CWinMIPS64Doc::OnUpdateExecuteSingle(CCmdUI* pCmdUI) 
 {
 	pCmdUI->Enable(!simulation_running && !cpu.keyboard);
 }
 
-void CWinEVEDoc::OnUpdateFileMulti(CCmdUI* pCmdUI) 
+void CWinMIPS64Doc::OnUpdateFileMulti(CCmdUI* pCmdUI) 
 {
 	pCmdUI->Enable(!simulation_running);	
 }
 
-void CWinEVEDoc::OnUpdateFileMemory(CCmdUI* pCmdUI) 
+void CWinMIPS64Doc::OnUpdateFileMemory(CCmdUI* pCmdUI) 
 {
 	pCmdUI->Enable(!simulation_running);
 }
 
-void CWinEVEDoc::OnUpdateFileOpen(CCmdUI* pCmdUI) 
+void CWinMIPS64Doc::OnUpdateFileOpen(CCmdUI* pCmdUI) 
 {
 	pCmdUI->Enable(!simulation_running);
 }
 
-void CWinEVEDoc::OnUpdateFileReset(CCmdUI* pCmdUI) 
+void CWinMIPS64Doc::OnUpdateFileReset(CCmdUI* pCmdUI) 
 {
 	pCmdUI->Enable(!simulation_running);	
 }
 
-void CWinEVEDoc::OnUpdateFullReset(CCmdUI* pCmdUI) 
+void CWinMIPS64Doc::OnUpdateFullReset(CCmdUI* pCmdUI) 
 {
 	pCmdUI->Enable(!simulation_running);	
 }
 
-int CWinEVEDoc::OnReload() 
+void CWinMIPS64Doc::OnReload() 
 { // reload last file
 	int res;
 	char txt[512];
@@ -2063,58 +2067,57 @@ int CWinEVEDoc::OnReload()
 	if (res==0) 
 	{
 	//	AfxGetMainWnd()->SetWindowText(lastfile);
-		_snprintf(txt, 512, "Archivo cargado - %s",lastfile);
+		CT2A lastfilee_ascii(lastfile);
+		sprintf_s(txt, 512, "Archivo cargado - %s", lastfilee_ascii.m_psz);
 		pStatus->SetPaneText(0,txt);
 	}
-
-	return res;
 }
 
-void CWinEVEDoc::OnUpdateReload(CCmdUI* pCmdUI) 
+void CWinMIPS64Doc::OnUpdateReload(CCmdUI* pCmdUI) 
 {
 	pCmdUI->Enable(!simulation_running);
 	
 }
 
-void CWinEVEDoc::OnFileDelaySlot() 
+void CWinMIPS64Doc::OnFileDelaySlot() 
 {
 	if (delay_slot) delay_slot=FALSE;
 	else			{delay_slot=TRUE;}
 	OnFileReset();
 }
 
-void CWinEVEDoc::OnUpdateFileDelaySlot(CCmdUI* pCmdUI) 
+void CWinMIPS64Doc::OnUpdateFileDelaySlot(CCmdUI* pCmdUI) 
 {
 	pCmdUI->SetCheck(delay_slot);
 	pCmdUI->Enable(!branch_target_buffer);
 }
 
-void CWinEVEDoc::OnFileForwarding() 
+void CWinMIPS64Doc::OnFileForwarding() 
 {
 	if (forwarding) forwarding=FALSE;
 	else            forwarding=TRUE;
 	OnFileReset();
 }
 
-void CWinEVEDoc::OnUpdateFileForwarding(CCmdUI* pCmdUI) 
+void CWinMIPS64Doc::OnUpdateFileForwarding(CCmdUI* pCmdUI) 
 {
 	pCmdUI->SetCheck(forwarding);	
 }
 
-void CWinEVEDoc::OnBtb() 
+void CWinMIPS64Doc::OnBtb() 
 {
 	if (branch_target_buffer) branch_target_buffer=FALSE;
 	else			          {branch_target_buffer=TRUE;}
 	OnFileReset();
 }
 
-void CWinEVEDoc::OnUpdateBtb(CCmdUI* pCmdUI) 
+void CWinMIPS64Doc::OnUpdateBtb(CCmdUI* pCmdUI) 
 {
 	pCmdUI->SetCheck(branch_target_buffer);
 	pCmdUI->Enable(!delay_slot);
 }
 
-void CWinEVEDoc::OnFileRegistersAsNumbers() 
+void CWinMIPS64Doc::OnFileRegistersAsNumbers() 
 {
 	if (registers_as_numbers) registers_as_numbers=FALSE;
 	else            registers_as_numbers=TRUE;
@@ -2122,7 +2125,7 @@ void CWinEVEDoc::OnFileRegistersAsNumbers()
 
 }
 
-void CWinEVEDoc::OnUpdateRegistersAsNumbers(CCmdUI* pCmdUI) 
+void CWinMIPS64Doc::OnUpdateRegistersAsNumbers(CCmdUI* pCmdUI) 
 {
 	pCmdUI->SetCheck(registers_as_numbers);	
 }

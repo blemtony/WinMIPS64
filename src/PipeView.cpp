@@ -2,9 +2,9 @@
 //
 
 #include "stdafx.h"
-#include "wineve.h"
+#include "WinMIPS64.h"
 #include "PipeView.h"
-#include "WinEVEDoc.h"
+#include "WinMIPS64Doc.h"
 #include "utils.h"
 
 #ifdef _DEBUG
@@ -38,9 +38,8 @@ END_MESSAGE_MAP()
 
 void get_mnemonic(CString s,char *txt)
 {
-	strcpy(txt,s);
-	
-
+	// TODO: 100 is fixed, should be passed as parameter
+	strcpy_s(txt,100,s);
 }
 
 void CPipeView::OnDraw(CDC* pDC)
@@ -48,7 +47,7 @@ void CPipeView::OnDraw(CDC* pDC)
 	unsigned int i,unit,shift;
 	CBrush brush;
 	char txt[80];
-	CWinEVEDoc* pDoc = GetDocument();
+	CWinMIPS64Doc* pDoc = GetDocument();
 	ASSERT_VALID(pDoc);
 
 	brush.CreateSolidBrush(YELLOW);
@@ -156,7 +155,7 @@ void CPipeView::OnDraw(CDC* pDC)
 		pDC->SelectObject(brush);
 	}
 	pDC->Rectangle(CRect(-100,-400,100,-700));
-	sprintf(txt,"  DIV  %d",pDoc->pipe.div.cycles);
+	sprintf_s(txt,80,"  DIV  %d",pDoc->pipe.div.cycles);
 	pDC->TextOut(-60,-500,txt);
 	brush.DeleteObject();
 	brush.Detach();
@@ -215,10 +214,10 @@ void CPipeView::Dump(CDumpContext& dc) const
 	CView::Dump(dc);
 }
 
-CWinEVEDoc* CPipeView::GetDocument() // non-debug version is inline
+CWinMIPS64Doc* CPipeView::GetDocument() // non-debug version is inline
 {
-	ASSERT(m_pDocument->IsKindOf(RUNTIME_CLASS(CWinEVEDoc)));
-	return (CWinEVEDoc*)m_pDocument;
+	ASSERT(m_pDocument->IsKindOf(RUNTIME_CLASS(CWinMIPS64Doc)));
+	return (CWinMIPS64Doc*)m_pDocument;
 }
 #endif //_DEBUG
 

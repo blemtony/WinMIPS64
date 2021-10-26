@@ -2,7 +2,7 @@
 //
 
 #include "stdafx.h"
-#include "WinEVE.h"
+#include "WinMIPS64.h"
 #include "DataDialog.h"
 #include "FontCtrl.h"
 
@@ -52,7 +52,7 @@ void CDataDialog::OnOK()
 	char txt[20];
 
 	UpdateData(TRUE);
-	strcpy(txt,m_contents);
+	strcpy_s(txt,20,m_contents);
 	
 	i=0;
 	while (txt[i]!=0 && txt[i]!=' ')

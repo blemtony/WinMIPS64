@@ -2,12 +2,12 @@
 //
 
 #include "stdafx.h"
-#include "WinEVE.h"
+#include "WinMIPS64.h"
 #include "RegDialog.h"
 
 #include "RegView.h"
 #include "FRegDialog.h"
-#include "WinEVEDoc.h"
+#include "WinMIPS64Doc.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -55,7 +55,7 @@ void CRegView::OnDraw(CDC* pDC)
 	DOUBLE64 db;
 	SIGNED32 source;
 
-	CWinEVEDoc* pDoc = GetDocument();
+	CWinMIPS64Doc* pDoc = GetDocument();
 	char txt[200];
 
 	pDC->SelectObject(&font);
@@ -101,7 +101,7 @@ void CRegView::OnDraw(CDC* pDC)
 			pDC->SetTextColor(GREY);
 
 		db.s=pDoc->cpu.rreg[i+32].val;
-		sprintf(txt,"F%d=  ",i);
+		sprintf_s(txt,200,"F%d=  ",i);
 		sprintdouble(&txt[5],db.d);
 	
 		pDC->TextOut(160,i*14,txt);
@@ -132,10 +132,10 @@ void CRegView::Dump(CDumpContext& dc) const
 	CScrollView::Dump(dc);
 }
 
-CWinEVEDoc* CRegView::GetDocument() // non-debug version is inline
+CWinMIPS64Doc* CRegView::GetDocument() // non-debug version is inline
 {
-	ASSERT(m_pDocument->IsKindOf(RUNTIME_CLASS(CWinEVEDoc)));
-	return (CWinEVEDoc*)m_pDocument;
+	ASSERT(m_pDocument->IsKindOf(RUNTIME_CLASS(CWinMIPS64Doc)));
+	return (CWinMIPS64Doc*)m_pDocument;
 }
 #endif //_DEBUG
 
@@ -152,7 +152,7 @@ void CRegView::OnLButtonDblClk(UINT /* nFlags */, CPoint point)
 	int reg=first+point.y/14;
 	char txt[1000];
 	char txt1[1000];
-	CWinEVEDoc* pDoc = GetDocument();
+	CWinMIPS64Doc* pDoc = GetDocument();
 	
 	if (reg>31) return;
 
@@ -166,12 +166,12 @@ void CRegView::OnLButtonDblClk(UINT /* nFlags */, CPoint point)
 		db.s=pDoc->cpu.rreg[reg+32].val;
 		sprintdouble(txt1,db.d);
 		fdlg.m_freg=txt1;
-		sprintf(txt,"F%d=",reg);
+		sprintf_s(txt,1000,"F%d=",reg);
 		fdlg.m_fname=txt;
 		fdlg.DoModal();
 		if (strcmp(txt1,LPCTSTR(fdlg.m_freg))!=0)
 		{
-			strcpy(txt,LPCTSTR(fdlg.m_freg));
+			strcpy_s(txt,1000,LPCTSTR(fdlg.m_freg));
 			db.d=atof(txt);
 			pDoc->cpu.rreg[reg+32].val=db.u;
 			pDoc->cpu.wreg[reg+32].val=db.u;
@@ -188,7 +188,7 @@ void CRegView::OnLButtonDblClk(UINT /* nFlags */, CPoint point)
 		registerName(reg, txt, pDoc->registers_as_numbers);
 		dlg.m_name=txt;
 		dlg.DoModal();
-		strcpy(txt,LPCTSTR(dlg.m_reg));
+		strcpy_s(txt,1000,LPCTSTR(dlg.m_reg));
 		pDoc->cpu.rreg[reg].val=strtoint64(txt,NULL,16);
 		pDoc->cpu.wreg[reg].val=strtoint64(txt,NULL,16);
 	}

@@ -2,7 +2,7 @@
 //
 
 #include "stdafx.h"
-#include "wineve.h"
+#include "WinMIPS64.h"
 #include "FPDialog.h"
 
 #ifdef _DEBUG
@@ -50,7 +50,7 @@ void CFPDialog::OnOK()
 	int i;
 	char txt[2000];
 	UpdateData(TRUE);
-	strcpy(txt,m_contents);
+	strcpy_s(txt,2000,m_contents);
 	
 	i=0;
 	while (txt[i]!=0 && txt[i]!=' ')

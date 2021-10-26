@@ -10,7 +10,7 @@
 /////////////////////////////////////////////////////////////////////////////
 // CInstructView view
 
-#include "WinEVEDoc.h"
+#include "WinMIPS64Doc.h"
 
 class CInstructView : public CScrollView
 {
@@ -20,7 +20,7 @@ protected:
 
 // Attributes
 public:
-	CWinEVEDoc* GetDocument();
+	CWinMIPS64Doc* GetDocument();
 	unsigned int first;
 	unsigned int nlines;
 	CFont font;
@@ -51,9 +51,9 @@ protected:
 	DECLARE_MESSAGE_MAP()
 };
 
-#ifndef _DEBUG  // debug version in WinEVEView.cpp
-inline CWinEVEDoc* CInstructView::GetDocument()
-   { return (CWinEVEDoc*)m_pDocument; }
+#ifndef _DEBUG  // debug version in InstructView.cpp
+inline CWinMIPS64Doc* CInstructView::GetDocument()
+   { return (CWinMIPS64Doc*)m_pDocument; }
 #endif
 
 /////////////////////////////////////////////////////////////////////////////

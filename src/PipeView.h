@@ -10,7 +10,7 @@
 /////////////////////////////////////////////////////////////////////////////
 // CPipeView view
 
-#include "WinEVEDoc.h"
+#include "WinMIPS64Doc.h"
 
 class CPipeView : public CView
 {
@@ -20,7 +20,7 @@ protected:
 
 // Attributes
 public:
-	CWinEVEDoc* GetDocument();
+	CWinMIPS64Doc* GetDocument();
 	CFont font;
 // Operations
 public:
@@ -52,9 +52,9 @@ protected:
 	DECLARE_MESSAGE_MAP()
 };
 
-#ifndef _DEBUG  // debug version in WinEVEView.cpp
-inline CWinEVEDoc* CPipeView::GetDocument()
-   { return (CWinEVEDoc*)m_pDocument; }
+#ifndef _DEBUG  // debug version in PipeView.cpp
+inline CWinMIPS64Doc* CPipeView::GetDocument()
+   { return (CWinMIPS64Doc*)m_pDocument; }
 #endif
 /////////////////////////////////////////////////////////////////////////////
 

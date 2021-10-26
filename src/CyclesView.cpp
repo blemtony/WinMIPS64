@@ -2,9 +2,9 @@
 //
 
 #include "stdafx.h"
-#include "winEVE.h"
+#include "WinMIPS64.h"
 #include "CyclesView.h"
-#include "WinEVEDoc.h"
+#include "WinMIPS64Doc.h"
 #include "utils.h"
 
 #ifdef _DEBUG
@@ -57,7 +57,7 @@ void CCyclesView::OnDraw(CDC* pDC)
 	int stage,substage,cause,last_stage,last_substage;
 	unsigned int i,j,k,very_start,my_start,tx,ty;
 	
-	CWinEVEDoc* pDoc = GetDocument();
+	CWinMIPS64Doc *pDoc = GetDocument();
 
 	char txt[10];
 
@@ -96,14 +96,14 @@ void CCyclesView::OnDraw(CDC* pDC)
 			case MULEX:
 				pDC->SelectObject(dcyan);
 				pDC->Rectangle(box);
-				sprintf(txt,"M%d",substage);
+				sprintf_s(txt,10,"M%d",substage);
 				if (stage!=last_stage || substage!=last_substage) 
 					pDC->TextOut(tx,ty,txt);
 				break;
 			case ADDEX:
 				pDC->SelectObject(dgreen);
 				pDC->Rectangle(box);
-				sprintf(txt,"A%d",substage);
+				sprintf_s(txt,10,"A%d",substage);
 				if (stage!=last_stage || substage!=last_substage) 
 					pDC->TextOut(tx,ty,txt);
 				break;
@@ -149,10 +149,10 @@ void CCyclesView::Dump(CDumpContext& dc) const
 	CScrollView::Dump(dc);
 }
 
-CWinEVEDoc* CCyclesView::GetDocument() // non-debug version is inline
+CWinMIPS64Doc* CCyclesView::GetDocument() // non-debug version is inline
 {
-	ASSERT(m_pDocument->IsKindOf(RUNTIME_CLASS(CWinEVEDoc)));
-	return (CWinEVEDoc*)m_pDocument;
+	ASSERT(m_pDocument->IsKindOf(RUNTIME_CLASS(CWinMIPS64Doc)));
+	return (CWinMIPS64Doc*)m_pDocument;
 }
 
 #endif //_DEBUG
@@ -165,7 +165,7 @@ CWinEVEDoc* CCyclesView::GetDocument() // non-debug version is inline
 void CCyclesView::OnUpdate(CView* /* pSender */, LPARAM lHint, CObject* /* pHint */) 
 {
 	CPoint ps;
-	CWinEVEDoc* pDoc=GetDocument();
+	CWinMIPS64Doc* pDoc=GetDocument();
 	CSize sizeTotal;
 	WORD32 entries=pDoc->entries;
 	WORD32 start;
@@ -197,7 +197,6 @@ void CCyclesView::OnUpdate(CView* /* pSender */, LPARAM lHint, CObject* /* pHint
 		srow=ps.y/14;
 		scol=ps.x/32;
 
-		CRect sz;
 		GetClientRect(&sz);
 		nrow=1+sz.Height()/14;
 		ncol=1+sz.Width()/32;

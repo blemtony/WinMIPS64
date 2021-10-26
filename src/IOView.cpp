@@ -2,7 +2,7 @@
 //
 
 #include "stdafx.h"
-#include "wineve.h"
+#include "WinMIPS64.h"
 #include "IOView.h"
 #include "MainFrm.h"
 
@@ -124,12 +124,12 @@ void CIOView::ComputeViewMetrics()
 
 void CIOView::OnDraw(CDC* pDC)
 {
-	CWinEVEDoc* pDoc = GetDocument();
+	CWinMIPS64Doc* pDoc = GetDocument();
 	int cursor_y;
 	CSize CharSize = GetCharSize();
 	CFont* pPreviousFont = pDC->SelectObject(GetFont());
 	CPen* pPreviousPen= pDC->SelectObject(GetPen());
-	CString line;
+	CString lineaux;
 	CString string=pDoc->cpu.Terminal;
 	CPoint ps;
 	int i,beg,cr,x,y;
@@ -176,13 +176,13 @@ void CIOView::OnDraw(CDC* pDC)
 		cr=string.Find('\n',beg);
 		if (cr<0)
 		{
-			line=string.Mid(beg,string.GetLength());
-			pDC->TextOut(0,cursor_y,line);
+			lineaux=string.Mid(beg,string.GetLength());
+			pDC->TextOut(0,cursor_y,lineaux);
 			break;
 		}
 
-		line=string.Mid(beg,cr-beg);
-		pDC->TextOut(0,cursor_y,line);
+		lineaux=string.Mid(beg,cr-beg);
+		pDC->TextOut(0,cursor_y,lineaux);
 
 		beg=cr+1;
 		cursor_y+=CharSize.cy;
@@ -257,10 +257,10 @@ void CIOView::Dump(CDumpContext& dc) const
 	CScrollView::Dump(dc);
 }
 
-CWinEVEDoc* CIOView::GetDocument() // non-debug version is inline
+CWinMIPS64Doc* CIOView::GetDocument() // non-debug version is inline
 {
-	ASSERT(m_pDocument->IsKindOf(RUNTIME_CLASS(CWinEVEDoc)));
-	return (CWinEVEDoc*)m_pDocument;
+	ASSERT(m_pDocument->IsKindOf(RUNTIME_CLASS(CWinMIPS64Doc)));
+	return (CWinMIPS64Doc*)m_pDocument;
 }
 
 
@@ -290,7 +290,7 @@ void CIOView::OnPrepareDC(CDC* pDC, CPrintInfo* pInfo)
 void CIOView::OnUpdate(CView* /* pSender */, LPARAM /* lHint */, CObject* /* pHint */) 
 {
 	// TODO: Add your specialized code here and/or call the base class
-	CWinEVEDoc* pDoc = GetDocument();
+	CWinMIPS64Doc* pDoc = GetDocument();
 	CSize sizeTotal;
 	CSize CharSize = GetCharSize();
 
@@ -312,7 +312,7 @@ void CIOView::OnChar(UINT nChar, UINT nRepCnt, UINT nFlags)
 {
 
 //	char txt[20];
-	CWinEVEDoc* pDoc = GetDocument();
+	CWinMIPS64Doc* pDoc = GetDocument();
 	CSize CharSize=GetCharSize();
 	CPoint point;
 	DOUBLE64 number;
@@ -391,7 +391,7 @@ void CIOView::OnChar(UINT nChar, UINT nRepCnt, UINT nFlags)
 
 void CIOView::OnSetFocus(CWnd* pOldWnd) 
 {
-	CWinEVEDoc* pDoc = GetDocument();
+	CWinMIPS64Doc* pDoc = GetDocument();
 	CScrollView::OnSetFocus(pOldWnd);
 	CreateSolidCaret (10, 2);
 	caretcount=0;

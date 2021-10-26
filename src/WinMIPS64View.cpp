@@ -1,11 +1,11 @@
-// WinEVEView.cpp : implementation of the CWinEVEView class
+// WinMIPS64View.cpp : implementation of the CWinMIPS64View class
 //
 
 #include "stdafx.h"
-#include "WinEVE.h"
+#include "WinMIPS64.h"
 
-#include "WinEVEDoc.h"
-#include "WinEVEView.h"
+#include "WinMIPS64Doc.h"
+#include "WinMIPS64View.h"
 #include "MainFrm.h"
 #include "utils.h"
 
@@ -17,31 +17,31 @@ static char THIS_FILE[] = __FILE__;
 
 
 /////////////////////////////////////////////////////////////////////////////
-// CWinEVEView
+// CWinMIPS64View
 
-IMPLEMENT_DYNCREATE(CWinEVEView, CScrollView)
+IMPLEMENT_DYNCREATE(CWinMIPS64View, CScrollView)
 
-BEGIN_MESSAGE_MAP(CWinEVEView, CScrollView)
-	//{{AFX_MSG_MAP(CWinEVEView)
+BEGIN_MESSAGE_MAP(CWinMIPS64View, CScrollView)
+	//{{AFX_MSG_MAP(CWinMIPS64View)
 	ON_WM_LBUTTONDBLCLK()
 	ON_WM_KEYDOWN()
 	//}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
-// CWinEVEView construction/destruction
+// CWinMIPS64View construction/destruction
 
-CWinEVEView::CWinEVEView()
+CWinMIPS64View::CWinMIPS64View()
 {
 	// TODO: add construction code here
 
 }
 
-CWinEVEView::~CWinEVEView()
+CWinMIPS64View::~CWinMIPS64View()
 {
 }
 
-BOOL CWinEVEView::PreCreateWindow(CREATESTRUCT& cs)
+BOOL CWinMIPS64View::PreCreateWindow(CREATESTRUCT& cs)
 {
 	// TODO: Modify the Window class or styles here by modifying
 	//  the CREATESTRUCT cs
@@ -50,13 +50,13 @@ BOOL CWinEVEView::PreCreateWindow(CREATESTRUCT& cs)
 }
 
 /////////////////////////////////////////////////////////////////////////////
-// CWinEVEView drawing
+// CWinMIPS64View drawing
 
-void CWinEVEView::OnDraw(CDC* pDC)
+void CWinMIPS64View::OnDraw(CDC* pDC)
 {
-	unsigned int i,j,pos;
+	unsigned int i,j,pos, len;
 	WORD32 fourbytes;
-	CWinEVEDoc* pDoc = GetDocument();
+	CWinMIPS64Doc* pDoc = GetDocument();
 	ASSERT_VALID(pDoc);
 	const char *linetext;
 	char txt[400];
@@ -104,15 +104,17 @@ void CWinEVEView::OnDraw(CDC* pDC)
 
 		if ((pDoc->cpu.cstat[i])==0) 
 		{
-			sprintf(&txt[pos]," %08x %s",fourbytes,linetext);
+			len = 400 - pos;
+			sprintf_s(&txt[pos],len, " %08x %s",fourbytes,linetext);
 			pDC->TextOut(0,14*i/4,txt);
 		}
 		else 
 		{
+			len = 400 - pos;
 			if ((pDoc->cpu.cstat[i]&2)!=0)
-				sprintf(&txt[pos],"%c%08x %s",171,fourbytes,linetext);
+				sprintf_s(&txt[pos],len,"%c%08x %s",171,fourbytes,linetext);
 			else
-			     sprintf(&txt[pos]," %08x %s",fourbytes,linetext);                    
+			     sprintf_s(&txt[pos],len," %08x %s",fourbytes,linetext);                    
 			if ((pDoc->cpu.cstat[i]&1)!=0)
 				pDC->SetTextColor(BLUE);
 			else
@@ -137,39 +139,32 @@ void CWinEVEView::OnDraw(CDC* pDC)
 }
 
 /////////////////////////////////////////////////////////////////////////////
-// CWinEVEView diagnostics
+// CWinMIPS64View diagnostics
 
 #ifdef _DEBUG
-void CWinEVEView::AssertValid() const
+void CWinMIPS64View::AssertValid() const
 {
 	CScrollView::AssertValid();
 }
 
-void CWinEVEView::Dump(CDumpContext& dc) const
+void CWinMIPS64View::Dump(CDumpContext& dc) const
 {
 	CScrollView::Dump(dc);
 }
 
-CWinEVEDoc* CWinEVEView::GetDocument() // non-debug version is inline
+CWinMIPS64Doc* CWinMIPS64View::GetDocument() // non-debug version is inline
 {
-	ASSERT(m_pDocument->IsKindOf(RUNTIME_CLASS(CWinEVEDoc)));
-	return (CWinEVEDoc*)m_pDocument;
+	ASSERT(m_pDocument->IsKindOf(RUNTIME_CLASS(CWinMIPS64Doc)));
+	return (CWinMIPS64Doc*)m_pDocument;
 }
 #endif //_DEBUG
 
 /////////////////////////////////////////////////////////////////////////////
-// CWinEVEView message handlers
+// CWinMIPS64View message handlers
 
-void CWinEVEView::OnInitialUpdate() 
+void CWinMIPS64View::OnInitialUpdate() 
 {
-	CMainFrame* pFrame=(CMainFrame*) AfxGetApp()->m_pMainWnd;
-	CStatusBar* pStatus=&pFrame->m_wndStatusBar;
-
 	CScrollView::OnInitialUpdate();
-
-	CWinEVEDoc* pDoc=GetDocument();
-
-//	AfxGetMainWnd()->SetWindowText("Hello mike");
 
 	CSize sizeTotal;
 	// TODO: calculate the total size of this view
@@ -180,9 +175,9 @@ void CWinEVEView::OnInitialUpdate()
 
  }	
 
-void CWinEVEView::OnUpdate(CView* /* pSender */, LPARAM lHint, CObject* /* pHint */) 
+void CWinMIPS64View::OnUpdate(CView* /* pSender */, LPARAM lHint, CObject* /* pHint */) 
 {
-	CWinEVEDoc* pDoc=GetDocument();
+	CWinMIPS64Doc* pDoc=GetDocument();
 	WORD32 pcline=pDoc->cpu.PC/4;
 	CPoint ps;
 
@@ -220,9 +215,9 @@ void CWinEVEView::OnUpdate(CView* /* pSender */, LPARAM lHint, CObject* /* pHint
 	
 }
 
-void CWinEVEView::OnLButtonDblClk(UINT /* nFlags */, CPoint point) 
+void CWinMIPS64View::OnLButtonDblClk(UINT /* nFlags */, CPoint point) 
 {
-	CWinEVEDoc* pDoc=GetDocument();
+	CWinMIPS64Doc* pDoc=GetDocument();
 
 // set/reset a break-point
 // Find which Instruction from Mouse co-ordinates
@@ -244,7 +239,7 @@ void CWinEVEView::OnLButtonDblClk(UINT /* nFlags */, CPoint point)
 	OnUpdate(this,0L,NULL);
 }
 
-void CWinEVEView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags) 
+void CWinMIPS64View::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags) 
 {
 	switch (nChar)
 	{
