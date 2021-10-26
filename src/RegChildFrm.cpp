@@ -25,7 +25,7 @@ CRegChildFrm::~CRegChildFrm()
 }
 
 
-static char *regtit="Registros";
+static char *regtit="Registers";
 
 BEGIN_MESSAGE_MAP(CRegChildFrm, CMDIChildWnd)
 	//{{AFX_MSG_MAP(CRegChildFrm)

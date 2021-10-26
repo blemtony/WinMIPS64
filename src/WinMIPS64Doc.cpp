@@ -468,27 +468,27 @@ void CWinMIPS64Doc::check_stalls(int status,char *str,int rawreg,char *txt)
 	{
 		raw_stalls++;
 		if (rawreg<32)
-			sprintf_s(mess,100,"  Atasco RAW en %s (R%d)",str,rawreg);
+			sprintf_s(mess,100,"  RAW Stall in  %s (R%d)",str,rawreg);
 		else
-			sprintf_s(mess,100,"  Atasco RAW en %s (F%d)",str,rawreg-32);
+			sprintf_s(mess,100,"  RAW Stall in  %s (F%d)",str,rawreg-32);
 		strcat_s(txt,100, mess);
 	}
 	if (status==WAW)	
 	{
 		waw_stalls++;
 		if (rawreg<32)
-			sprintf_s(mess,100,"  Atasco WAW en %s (R%d)",str,rawreg);
+			sprintf_s(mess,100,"  WAW Stall in %s (R%d)",str,rawreg);
 		else
-			sprintf_s(mess,100,"  Atasco WAW en %s (F%d)",str,rawreg-32);
+			sprintf_s(mess,100,"  WAW Stall in %s (F%d)",str,rawreg-32);
 		strcat_s(txt,100,mess);
 	}
 	if (status==WAR)
 	{
 		war_stalls++;
 		if (rawreg<32)
-			sprintf_s(mess,100,"  Atasco WAR en %s (R%d)",str,rawreg);
+			sprintf_s(mess,100,"  WAR Stall in %s (R%d)",str,rawreg);
 		else
-			sprintf_s(mess,100,"  Atasco WAR en %s (F%d)",str,rawreg-32);
+			sprintf_s(mess,100,"  WAR Stall in %s (F%d)",str,rawreg-32);
 		strcat_s(txt,100,mess);
 	}
 }
@@ -507,13 +507,13 @@ void CWinMIPS64Doc::process_result(RESULT *result,BOOL show)
 	{
 		something=TRUE;
 		branch_taken_stalls++;
-		strcat_s(txt,100,"  Atasco Branch Taken");
+		strcat_s(txt,100,"  Branch Taken Stall");
 	}
 	if (result->ID==BRANCH_MISPREDICTED_STALL)
 	{
 		something=TRUE;
 		branch_misprediction_stalls++;
-		strcat_s(txt,100,"  Atasco Branch Misprediction");
+		strcat_s(txt,100,"  Branch Misprediction Stall");
 	}
 
 	if (result->MEM==LOADS || result->MEM==DATA_ERR) loads++;
@@ -531,59 +531,59 @@ void CWinMIPS64Doc::process_result(RESULT *result,BOOL show)
 		if (result->ID==STALLED)
 		{
 			structural_stalls++;
-			strcat_s(txt,300,"  Atasco Estructural en ID");
+			strcat_s(txt,300,"  Structural stall in ID");
 		}
 		if (result->EX==STALLED)
 		{
 			structural_stalls++;
-			strcat_s(txt,300,"  Atasco Estructural en EX");
+			strcat_s(txt,300,"  Structural stall in EX");
 		}
 		if (result->DIVIDER==STALLED)
 		{
 			structural_stalls++;
-			strcat_s(txt,300,"  Atasco Estructural en FP-DIV");
+			strcat_s(txt,300,"  Structural stall in FP-DIV");
 		}
 		if (result->MULTIPLIER[MUL_LATENCY-1]==STALLED)
 		{
 			structural_stalls++;
-			strcat_s(txt,300,"  Atasco Estructural en FP-MUL");
+			strcat_s(txt,300,"  Structural stall in FP-MUL");
 		}
 		if (result->ADDER[ADD_LATENCY-1]==STALLED)
 		{
 			structural_stalls++;
-			strcat_s(txt,300,"  Atasco Estructural en FP-ADD");
+			strcat_s(txt,300,"  Structural stall in FP-ADD");
 		}
 	}
 	if (result->IF==NO_SUCH_CODE_MEMORY)
 	{
-		strcat_s(txt,300,"  No existe esa dirección de código!");
+		strcat_s(txt,300,"  No such code address!");
 		cpu.status=HALTED;
 	}
 	if (result->EX==INTEGER_OVERFLOW)
 	{
-		strcat_s(txt,300,"  Desbordamiento de número entero!");
+		strcat_s(txt,300,"  Integer Overflow!");
 	}
 	if (result->DIVIDER==DIVIDE_BY_ZERO)
 	{
-		strcat_s(txt,300,"  División por Cero en DIV!");
+		strcat_s(txt,300,"  Divide by Zero in DIV!");
 	}
 
 	if (result->MEM==DATA_ERR)
 	{
-		strcat_s(txt,300,"  Memoria no inicializada en MEM!");
+		strcat_s(txt,300,"  Uninitialised memory in MEM!");
 	}
 	if (result->MEM==NO_SUCH_DATA_MEMORY)
 	{
-		strcat_s(txt,300,"  No existe esa dirección de datos!");
+		strcat_s(txt,300,"  No such data address!");
 	}
 	if (result->MEM==DATA_MISALIGNED)
 	{
-		strcat_s(txt, 300," Error Fatal - LOAD/StTORE de memoria mal alineado!");
+		strcat_s(txt, 300," Fatal Error - misaligned memory load/store!");
 	}
 
 	if (show)
 	{
-		if (txt[0]==0) pStatus->SetPaneText(0,"Listo");
+		if (txt[0]==0) pStatus->SetPaneText(0,"Ready");
 		else pStatus->SetPaneText(0,txt);
 	}
 }
@@ -950,7 +950,7 @@ void CWinMIPS64Doc::OnExecuteMulticycle()
 
 	if (status==WAITING_FOR_INPUT)
 	{
-		pStatus->SetPaneText(0,"Esperando Entrada");
+		pStatus->SetPaneText(0,"Wainting for Input");
 	}
 
 	simulation_running=FALSE;
@@ -971,7 +971,7 @@ void CWinMIPS64Doc::OnExecuteRunto()
 	simulation_running=TRUE;
 	CMainFrame* pFrame=(CMainFrame*) AfxGetApp()->m_pMainWnd;
 	CStatusBar* pStatus=&pFrame->m_wndStatusBar;
-	pStatus->SetPaneText(0,"Ejecutando Simulación");
+	pStatus->SetPaneText(0,"Running Simulation");
 	do
 	{
 		if (::PeekMessage(&message,NULL,0,0,PM_REMOVE))
@@ -986,12 +986,12 @@ void CWinMIPS64Doc::OnExecuteRunto()
 	simulation_running=FALSE;
 	if (status==WAITING_FOR_INPUT) 
 	{
-		sprintf_s(buf,80,"Simulación Detenida luego de %d ciclos - Esperando Entrada",lapsed);
+		sprintf_s(buf,80,"Simulation Halted after %d cycles - Waiting for Input",lapsed);
 		restart=TRUE;
 	}
 	else
 	{
-		sprintf_s(buf,80,"Simulación Detenida luego de %d ciclos",lapsed);
+		sprintf_s(buf,80,"Simulation Halted after %d cycles",lapsed);
 		restart=FALSE;
 	}
 
@@ -1026,28 +1026,28 @@ int CWinMIPS64Doc::openfile(CString fname)
 	{
 		remove("winmips64.ini");
 		remove("winmips64.las"); 
-		AfxGetMainWnd()->SetWindowText("WinMIPS64 - Simulador de Procesador MIPS64");
+		AfxGetMainWnd()->SetWindowText("WinMIPS64 - MIPS64 Processor Simulator");
 		lastfile="";
 	}
 	if (res==1)
 	{
 		char txt[512];
 		CT2A fname_ascii(fname);
-		sprintf_s(txt,512,"No se pudo abrir el archivo %s",fname_ascii.m_psz);
+		sprintf_s(txt,512,"Unable to open file %s",fname_ascii.m_psz);
 		AfxMessageBox(txt,MB_OK|MB_ICONEXCLAMATION);
 		return res;
 	}
 	if (res==2)
 	{
-		AfxMessageBox("Errores detectados en 1ra Pasada");
+		AfxMessageBox("Errors detected on pass 1");
 		return res;
 	}
 	if (res==3)
 	{
-		AfxMessageBox("Errores detectados en 2da Pasada");
+		AfxMessageBox("Errors detected on pass 2");
 		return res;
 	}
-	AfxGetMainWnd()->SetWindowText("WinMIPS64 - Simulador de Procesador MIPS64 - " + fname);
+	AfxGetMainWnd()->SetWindowText("WinMIPS64 - MIPS64 Processor Simulator - " + fname);
 
 	return res;
 }
@@ -1577,7 +1577,7 @@ int CWinMIPS64Doc::first_pass(char *line,int lineptr)
         
         if (CODEORDATA==0)
         {
-            sprintf_s(txt,100,"Pasada 1 - Error en linea %d\n",lineptr);
+            sprintf_s(txt,100,"Pass 1 - Error on line %d\n",lineptr);
 			AfxMessageBox(txt);
             return 1;
         }
@@ -1585,7 +1585,7 @@ int CWinMIPS64Doc::first_pass(char *line,int lineptr)
         {
             if (code_symptr>=SYMTABSIZE)
             {
-                sprintf_s(txt,100,"Pasada 1 - Error en linea %d\nLa tabla de Simbolos de Código esta llena.",lineptr);
+                sprintf_s(txt,100,"Pass 1 - Error on line %d\nCode symbol table overflow.",lineptr);
                 AfxMessageBox(txt);
                 return 1;
             } 
@@ -1600,7 +1600,7 @@ int CWinMIPS64Doc::first_pass(char *line,int lineptr)
         {
             if (data_symptr>=SYMTABSIZE)
             {
-                sprintf_s(txt,100,"Pasada 1 - Error en linea %d\nLa tabla de Simbolos de Datos esta llena.",lineptr);
+                sprintf_s(txt,100,"Pass 1 - Error on line %d\nData symbol table overflow.",lineptr);
                 AfxMessageBox(txt);
                 return 1;
             } 
@@ -1620,7 +1620,7 @@ int CWinMIPS64Doc::first_pass(char *line,int lineptr)
         // increase instruction pointer
         if (CODEORDATA!=CODE)
         {
-            sprintf_s(txt,100,"Pasada 1 - Error en linea %d\n",lineptr);
+            sprintf_s(txt,100,"Pass 1 - Error on line %d\n",lineptr);
 			AfxMessageBox(txt);
             return 1;
         }
@@ -1628,7 +1628,7 @@ int CWinMIPS64Doc::first_pass(char *line,int lineptr)
         codeptr+=4;
         if (codeptr>CODESIZE)
         {
-            sprintf_s(txt,100,"Pasada 1 - Error en linea %d\nNo existe esa ubicación de memoria",lineptr);
+            sprintf_s(txt,100,"Pass 1 - Error on line %d\nNo such memory location",lineptr);
             AfxMessageBox(txt);
             return 1;
         }
@@ -1636,7 +1636,7 @@ int CWinMIPS64Doc::first_pass(char *line,int lineptr)
     }
     if (directive(1,ptr,line)) return 0;
 
-    sprintf_s(txt,100,"Pasada 1 - Error en linea %d\n",lineptr);
+    sprintf_s(txt,100,"Pass 1 - Error on line %d\n",lineptr);
     AfxMessageBox(txt);
     return 1;
 }
@@ -2068,7 +2068,7 @@ void CWinMIPS64Doc::OnReload()
 	{
 	//	AfxGetMainWnd()->SetWindowText(lastfile);
 		CT2A lastfilee_ascii(lastfile);
-		sprintf_s(txt, 512, "Archivo cargado - %s", lastfilee_ascii.m_psz);
+		sprintf_s(txt, 512, "File Loaded - %s", lastfilee_ascii.m_psz);
 		pStatus->SetPaneText(0,txt);
 	}
 }

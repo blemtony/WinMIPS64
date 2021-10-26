@@ -58,24 +58,24 @@ void CStatView::OnDraw(CDC* pDC)
 	pDC->SelectObject(&font);
 
 	pDC->SetTextColor(RGB(255,0,0));
-	pDC->TextOut(0,0," Ejecución");
+	pDC->TextOut(0,0," Execution");
 	pDC->SetTextColor(RGB(0,0,0));
 
 	if (pDoc->cycles==1)
-		sprintf_s(txt,100," 1 Ciclo");
+		sprintf_s(txt,100," 1 Cycle");
 	else
-		sprintf_s(txt,100," %d Ciclos",pDoc->cycles);
+		sprintf_s(txt,100," %d Cycles",pDoc->cycles);
 	pDC->TextOut(0,20,txt);
 
 	if (pDoc->instructions==1)
-		sprintf_s(txt,100," 1 Instrucción");
+		sprintf_s(txt,100," 1 Instruction");
 	else
-		sprintf_s(txt,100," %d Instrucciones",pDoc->instructions);
+		sprintf_s(txt,100," %d Instructions",pDoc->instructions);
 	pDC->TextOut(0,34,txt);
 
 	if (pDoc->instructions>0) 
 	{
-		sprintf_s(txt,100," %3.3f Ciclos Por Instrucción (CPI)",(double)pDoc->cycles/pDoc->instructions);
+		sprintf_s(txt,100," %3.3f Cycles Per Instruction (CPI)",(double)pDoc->cycles/pDoc->instructions);
 		pDC->TextOut(0,48,txt);
 	}
 
@@ -100,48 +100,48 @@ void CStatView::OnDraw(CDC* pDC)
 	pDC->TextOut(0,148,txt);
 */
 	pDC->SetTextColor(RGB(255,0,0));
-	pDC->TextOut(0,90," Atascos");
+	pDC->TextOut(0,90," Stalls");
 	pDC->SetTextColor(RGB(0,0,0));
 
 	if (pDoc->raw_stalls==1)
-		sprintf_s(txt,100," 1 Atasco RAW");
+		sprintf_s(txt,100," 1 RAW Stall");
 	else
-		sprintf_s(txt,100," %d Atascos RAW ",pDoc->raw_stalls);
+		sprintf_s(txt,100," %d RAW Stalls",pDoc->raw_stalls);
 	pDC->TextOut(0,110,txt);
 
 	if(pDoc->waw_stalls==1)
-		sprintf_s(txt,100," 1 Atasco WAW");
+		sprintf_s(txt,100," 1 WAW Stall");
 	else
-		sprintf_s(txt,100," %d Atascos WAW",pDoc->waw_stalls);
+		sprintf_s(txt,100," %d WAW Stalls",pDoc->waw_stalls);
 	pDC->TextOut(0,124,txt);
 
 	if (pDoc->war_stalls==1)
-		sprintf_s(txt,100," 1 Atasco WAR");
+		sprintf_s(txt,100," 1 WAR Stall");
 	else
-		sprintf_s(txt,100," %d Atascos WAR",pDoc->war_stalls);
+		sprintf_s(txt,100," %d WAR Stalls",pDoc->war_stalls);
 	pDC->TextOut(0,138,txt);
 
 	if (pDoc->structural_stalls==1)
-		sprintf_s(txt,100," 1 Atasco Estructural");
+		sprintf_s(txt,100," 1 Structural Stall");
 	else
-		sprintf_s(txt,100," %d Atascos Estructurales",pDoc->structural_stalls);
+		sprintf_s(txt,100," %d Structural Stalls",pDoc->structural_stalls);
 	pDC->TextOut(0,152,txt);
 
 	if (pDoc->branch_taken_stalls==1)
-		sprintf_s(txt,100," 1 Atasco Branch Taken");
+		sprintf_s(txt,100," 1 Branch Taken Stall");
 	else
-		sprintf_s(txt,100," %d Atascos Branch Taken",pDoc->branch_taken_stalls);
+		sprintf_s(txt,100," %d Branch Taken Stalls",pDoc->branch_taken_stalls);
 	pDC->TextOut(0,166,txt);
 
 	if (pDoc->branch_misprediction_stalls==1)
-		sprintf_s(txt,100," 1 Atasco Branch Misprediction ");
+		sprintf_s(txt,100," 1 Branch Misprediction Stall");
 	else 
-		sprintf_s(txt,100," %d Atascos Branch Misprediction",pDoc->branch_misprediction_stalls);
+		sprintf_s(txt,100," %d Branch Misprediction Stalls",pDoc->branch_misprediction_stalls);
 	pDC->TextOut(0,180,txt);
 
 
 	pDC->SetTextColor(RGB(255,0,0));
-	pDC->TextOut(0,222," Tamaño del Código");
+	pDC->TextOut(0,222,"Code Size");
 	pDC->SetTextColor(RGB(0,0,0));
 
 	int codeSize = pDoc->codeptr;

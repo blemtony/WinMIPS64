@@ -24,7 +24,7 @@ CDataChildFrm::~CDataChildFrm()
 {
 }
 
-static char *datatit="Memoria de Datos";
+static char *datatit="Data Memory";
 
 BEGIN_MESSAGE_MAP(CDataChildFrm, CMDIChildWnd)
 	//{{AFX_MSG_MAP(CDataChildFrm)
